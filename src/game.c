@@ -8,6 +8,9 @@ void set_legal_moves(Board *board, int row, int col) {
 
     switch (type) {
         case 'P':
+            // TODO:
+            //  * En Passant
+            //  * Promoting
             if (color == 'B') {
                 // Single move down
                 if (row < 7  &&  board->squares[row+1][col].piece == NULL) {

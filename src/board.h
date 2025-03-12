@@ -4,8 +4,6 @@
 #include <stdlib.h>
 #include "raylib.h"
 #include "constants.h"
-//#define SQUARE_SIZE 50
-//#define SCALE 0.35f
 
 
 typedef struct {

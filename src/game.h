@@ -4,7 +4,9 @@
 
 #include "board.h"
 
+
 void set_legal_moves(Board *board, int row, int col);
 void reset_legal_moves(Board *board);
+
 
 #endif //CHESS_GAME_H
