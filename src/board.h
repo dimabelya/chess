@@ -1,12 +1,11 @@
 #ifndef CHESS_BOARD_H
 #define CHESS_BOARD_H
 
-
-#include "raylib.h"
 #include <stdlib.h>
-
-#define SQUARE_SIZE 50
-#define SCALE 0.35f
+#include "raylib.h"
+#include "constants.h"
+//#define SQUARE_SIZE 50
+//#define SCALE 0.35f
 
 
 typedef struct {
@@ -44,5 +43,6 @@ void free_board(Board *board);
 void print_board(Board *board);
 void draw_board(Board *board);
 void draw_pieces(Board *board);
+
 
 #endif

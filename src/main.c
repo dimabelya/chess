@@ -5,8 +5,9 @@
 
 
 int main() {
-    int screen_size = SQUARE_SIZE * 8;
-    InitWindow(screen_size, screen_size, "Chess");
+    int screen_width = BOARD_SIZE + EXTRA_WIDTH;
+    int screen_height = BOARD_SIZE + EXTRA_HEIGHT;
+    InitWindow(screen_width, screen_height, "Chess");
 
     load_piece_textures();
     Board board;

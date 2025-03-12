@@ -12,6 +12,7 @@ add_executable(chess src/main.c src/board.c
         src/gui.h
         src/game.c
         src/game.h
+        src/constants.h
 )
 
 target_link_libraries(chess "/opt/homebrew/Cellar/raylib/5.5/lib/libraylib.5.5.0.dylib")

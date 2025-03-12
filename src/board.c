@@ -153,8 +153,10 @@ void draw_board(Board *board) {
                 square_color = DARKGRAY;
             }
             // Coordinates of top-left of each square
-            int x = col * SQUARE_SIZE;
-            int y = row * SQUARE_SIZE;
+            int x = col * SQUARE_SIZE + EXTRA_WIDTH/2;
+            int y = row * SQUARE_SIZE + EXTRA_HEIGHT/2;
+            // int x = col * SQUARE_SIZE;
+            // int y = row * SQUARE_SIZE;
             DrawRectangle(x, y, SQUARE_SIZE, SQUARE_SIZE, square_color);
         }
     }
@@ -176,8 +178,8 @@ void draw_pieces(Board *board) {
                 float p_height = (float)p->texture.height * SCALE;
 
                 // Centered coordinates within each square
-                float center_x = (SQUARE_SIZE - p_width) / 2;
-                float center_y = (SQUARE_SIZE - p_height) / 2;
+                float center_x = (SQUARE_SIZE - p_width)/2 + (float)EXTRA_WIDTH/2;
+                float center_y = (SQUARE_SIZE - p_height)/2 + (float)EXTRA_HEIGHT/2;
 
                 // Coordinates get shifted for each square
                 Vector2 v = (Vector2){x + center_x, y + center_y};

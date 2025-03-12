@@ -1,6 +1,3 @@
-//
-// Created by Belya Dima on 3/11/25.
-//
 
 #ifndef CHESS_GAME_H
 #define CHESS_GAME_H

@@ -1,3 +1,4 @@
+
 #include "gui.h"
 
 
@@ -5,10 +6,13 @@ void drag_n_drop(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected) 
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         int mouse_x = GetMouseX();
         int mouse_y = GetMouseY();
-        int dest_x = mouse_y / SQUARE_SIZE;
-        int dest_y = mouse_x / SQUARE_SIZE;
-        //int dest_x = (mouse_y - EXTRA_HE) / SQUARE_SIZE;
-        //int dest_y = mouse_x / SQUARE_SIZE;
+        int dest_x = mouse_y/SQUARE_SIZE;  // for some reason this works...
+        int dest_y = mouse_x/SQUARE_SIZE;
+
+
+        if (dest_x < 0 || dest_y < 0 || dest_x > 7 || dest_y >7) {
+            return;
+        }
 
         if (*is_piece_selected) {
             // Unselecting
@@ -33,8 +37,6 @@ void drag_n_drop(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected) 
                     if (board->squares[dest_x][dest_y].piece->color == 'B') {
 
                     }
-
-
                     board->squares[dest_x][dest_y].piece = board->squares[*cur_x][*cur_y].piece;
                     board->squares[*cur_x][*cur_y].piece = NULL;
                     *is_piece_selected = false;
@@ -42,7 +44,6 @@ void drag_n_drop(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected) 
                     board->squares[dest_x][dest_y].piece->moves += 1;
                 }
             }
-
         }
         // If no piece is selected and mouse click on nonempty square
         else if (board->squares[dest_x][dest_y].piece != NULL) {
@@ -50,8 +51,6 @@ void drag_n_drop(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected) 
             *cur_y = dest_y;
             *is_piece_selected = true;
         }
-
-
     }
 }
 
