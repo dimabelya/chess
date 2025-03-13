@@ -8,7 +8,6 @@
 int main() {
 
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
-
     load_piece_textures();
     Board board;
     init_board(&board);
@@ -22,16 +21,17 @@ int main() {
     // Main game loop
     while (!WindowShouldClose()) {
 
-        select_piece(&board, &selected_row, &selected_col, &is_piece_selected);
-
         BeginDrawing();
         ClearBackground(DARKBROWN);
 
         draw_board(&board);
         draw_pieces(&board);
-        display_captured(&board);
 
         highlight_square(&board, selected_row, selected_col, is_piece_selected);
+        select_piece(&board, &selected_row, &selected_col, &is_piece_selected);
+
+        display_captured(&board);
+
         EndDrawing();
     }
 

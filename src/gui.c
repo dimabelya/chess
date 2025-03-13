@@ -9,9 +9,7 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
         int dest_x = (mouse_y - EXTRA_HEIGHT/2) / SQUARE_SIZE;  // col of chess board
         int dest_y = (mouse_x - EXTRA_WIDTH/2) / SQUARE_SIZE;   // row of chess board
 
-        if (dest_x < 0 || dest_y < 0 || dest_x > 7 || dest_y >7) {
-            return;
-        }
+        if (dest_x < 0 || dest_y < 0 || dest_x > 7 || dest_y >7) return;
 
         if (*is_piece_selected) {
             // Unselecting
@@ -31,20 +29,18 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
             else {
                 // check if the dest is legal
                 if (board->squares[dest_x][dest_y].legal_move == true) {
-                    // Add dest piece to players captured set
-                    // who is getting captured??
-                    // TODO: adding pieces to CapturedPieces
+                    // Add dest piece to players captured set and increment num of captured
+                    // White capturing black
                     if (board->squares[dest_x][dest_y].piece->color == 'B') {
-                        // black is being captured by white
-                        printf("Before increment: %d\n", board->captured.white_captured_count);
                         board->captured.white_captured_count += 1;
-                        printf("After increment: %d\n", board->captured.white_captured_count);
-
                         board->captured.white_capture[board->captured.white_captured_count] = board->squares[dest_x][dest_y].piece;
-                        display_captured(board);
-                        // TODO: check edge cases
                     }
-
+                    // Black capturing white
+                    if (board->squares[dest_x][dest_y].piece->color == 'W') {
+                        board->captured.black_captured_count += 1;
+                        board->captured.black_capture[board->captured.black_captured_count] = board->squares[dest_x][dest_y].piece;
+                    }
+                    // Complete the move: move piece to dest, remove dest, reset things
                     board->squares[dest_x][dest_y].piece = board->squares[*cur_x][*cur_y].piece;
                     board->squares[*cur_x][*cur_y].piece = NULL;
                     *is_piece_selected = false;
@@ -91,36 +87,55 @@ void highlight_square(Board *board, int cur_x, int cur_y, bool is_piece_selected
     }
 }
 
+
 void display_captured(Board *board) {
     // Display the pieces that white captured
     int white_count = board->captured.white_captured_count;
 
     // bottom left
-    int x = EXTRA_WIDTH/4;
-    int y = SCREEN_HEIGHT - EXTRA_HEIGHT/4;
-    int spacing = 40;
-    DrawCircle(x, y, 10, RED);
+    int x1 = 0;
+    int y1 = SCREEN_HEIGHT - EXTRA_HEIGHT/4;
+    //DrawCircle(x1, y1, 5, RED);
 
-    // TODO: for each captured piece draw them ...
     for (int i = 0; i <= white_count; i++) {
         Piece *p = board->captured.white_capture[i];
 
         if (p != NULL) {
-            // Scaled widths and heights of each texture
             float p_width = (float)p->texture.width * SCALE;
             float p_height = (float)p->texture.height * SCALE;
 
-            // Adjust positioons
-            float draw_x = x + (i * spacing);
-            float draw_y = y - (p_height/2);
-
+            float draw_x = (i * p_width * 0.5);
+            float draw_y = y1 - 0.5*(p_height/2);
             Vector2 v = {draw_x, draw_y};
-
 
             if (p->texture.id != 0) {
                 DrawTextureEx(p->texture, v, 0.0f, SCALE*0.5, WHITE);
-            } else {
-                printf("ERROR in texture --------\n");
+            }
+        }
+
+    }
+
+    // Display the pieces that black captured
+    int black_count = board->captured.black_captured_count;
+
+    // bottom left
+    int x2 = 0;
+    int y2 = EXTRA_HEIGHT/4;
+    // DrawCircle(x1, y2, 5, RED);
+
+    for (int i = 0; i <= black_count; i++) {
+        Piece *p = board->captured.black_capture[i];
+
+        if (p != NULL) {
+            float p_width = (float)p->texture.width * SCALE;
+            float p_height = (float)p->texture.height * SCALE;
+
+            float draw_x = (i * p_width * 0.5);
+            float draw_y = y2 - 0.5*(p_height/2);
+            Vector2 v = {draw_x, draw_y};
+
+            if (p->texture.id != 0) {
+                DrawTextureEx(p->texture, v, 0.0f, SCALE*0.5, WHITE);
             }
         }
 

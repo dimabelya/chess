@@ -54,8 +54,8 @@ void init_captured(Board *board) {
         board->captured.white_capture[i] = NULL;
         board->captured.black_capture[i] = NULL;
     }
-    board->captured.white_captured_count = 0;
-    board->captured.black_captured_count = 0;
+    board->captured.white_captured_count = -1;
+    board->captured.black_captured_count = -1;
 }
 
 

@@ -7,60 +7,65 @@ void set_legal_moves(Board *board, int row, int col) {
     char color = board->squares[row][col].piece->color;
 
     switch (type) {
-        case 'P':
-            // TODO:
-            //  * En Passant
-            //  * Promoting
-            if (color == 'B') {
-                // Single move down
-                if (row < 7  &&  board->squares[row+1][col].piece == NULL) {
-                    board->squares[row + 1][col].legal_move = true;
-                }
-                // Double move down
-                if (board->squares[row][col].piece->moves == 0 &&
-                    board->squares[row + 1][col].piece == NULL &&
-                    board->squares[row + 2][col].piece == NULL) {
-                    board->squares[row + 2][col].legal_move = true;
-                }
-                // Diagonal capture down left
-                if (row < 7  &&  col > 0  &&  board->squares[row+1][col-1].piece != NULL) {
-                    if (board->squares[row+1][col-1].piece->color == 'W') {
-                        board->squares[row+1][col-1].legal_move = true;
-                    }
-                }
-                // Diagonal capture down right
-                if (row < 7  && col < 7  &&  board->squares[row+1][col+1].piece != NULL) {
-                    if (board->squares[row+1][col+1].piece->color == 'W') {
-                        board->squares[row+1][col+1].legal_move = true;
-                    }
+        case 'P': {
+            // TODO:  * En Passant,  * Promoting
+
+            int direction = (color == 'B') ? 1 : -1;
+            int start_row = (color == 'B') ? 1 : 6;
+
+            // Single move forward
+            if (board->squares[row + direction][col].piece == NULL) {
+                board->squares[row + direction][col].legal_move = true;
+
+                // Double move forward
+                if (row == start_row  &&  board->squares[row + 2 * direction][col].piece == NULL) {
+                    board->squares[row + 2 * direction][col].legal_move = true;
                 }
             }
-            if (color == 'W') {
-                // Single move up
-                if (row > 0  &&  board->squares[row-1][col].piece == NULL){
-                    board->squares[row-1][col].legal_move = true;
-                }
-                // Double move up
-                if (board->squares[row][col].piece->moves == 0 &&
-                    board->squares[row-1][col].piece == NULL &&
-                    board->squares[row-2][col].piece == NULL) {
-                    board->squares[row-2][col].legal_move = true;
-                }
-                // Diagonal capture up left
-                if (row > 0  && col > 0  &&  board->squares[row-1][col-1].piece != NULL) {
-                    if (board->squares[row-1][col-1].piece->color == 'B') {
-                        board->squares[row-1][col-1].legal_move = true;
-                    }
-                }
-                // Diagonal capture up right
-                if (row > 0  &&  col < 7  &&  board->squares[row-1][col+1].piece != NULL) {
-                    if (board->squares[row-1][col+1].piece->color == 'B') {
-                        board->squares[row-1][col+1].legal_move = true;
+
+            // Diagonal captures
+            for (int dc = -1; dc <= 1; dc += 2) { // Check both left (-1) and right (+1)
+                int new_col = col + dc;
+                int new_row = row + direction;
+                if (new_col >= 0  &&  new_col <= 7  &&  new_row >= 0  &&  new_row <= 7) {
+                    Piece *target = board->squares[new_row][new_col].piece;
+                    if (target  &&  target->color != color) {
+                        board->squares[new_row][new_col].legal_move = true;
                     }
                 }
             }
             break;
-        case 'R':
+        }
+
+        case 'R': {
+            int directions[4][2] = {
+                    {-1, 0},  // Up
+                    {1,  0},  // Down
+                    {0, -1},  // Left
+                    {0,  1}   // Right
+            };
+            for (int i = 0; i < 4; i++) {  // For all directions
+                int r = row, c = col;
+
+                while (true) {
+                    r += directions[i][0];
+                    c += directions[i][1];
+                    if (r < 0 || r >= 8 || c < 0 || c >= 8) break;
+
+                    // Empty square
+                    if (board->squares[r][c].piece == NULL) {
+                        board->squares[r][c].legal_move = true;
+                    }
+                    // Capture, stop
+                    else if (board->squares[r][c].piece->color != color) {
+                        board->squares[r][c].legal_move = true;
+                        break;
+                    }
+                    // Same color, stop
+                    else break;
+                }
+            }
+        }
             break;
         case 'N':
             break;
