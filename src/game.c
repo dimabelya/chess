@@ -7,7 +7,7 @@ void set_legal_moves(Board *board, int row, int col) {
     char color = board->squares[row][col].piece->color;
 
     switch (type) {
-        case 'P': {
+        case 'P': {  /*---- KNIGHT ----*/
             // TODO:  * En Passant,  * Promoting
 
             int direction = (color == 'B') ? 1 : -1;
@@ -25,25 +25,27 @@ void set_legal_moves(Board *board, int row, int col) {
 
             // Diagonal captures
             for (int dc = -1; dc <= 1; dc += 2) { // Check both left (-1) and right (+1)
-                int new_col = col + dc;
-                int new_row = row + direction;
-                if (new_col >= 0  &&  new_col <= 7  &&  new_row >= 0  &&  new_row <= 7) {
-                    Piece *target = board->squares[new_row][new_col].piece;
+                int r = row + direction;
+                int c = col + dc;
+
+                if (c >= 0 && c <= 7 && r >= 0 && r <= 7) {
+                    Piece *target = board->squares[r][c].piece;
                     if (target  &&  target->color != color) {
-                        board->squares[new_row][new_col].legal_move = true;
+                        board->squares[r][c].legal_move = true;
                     }
                 }
             }
-            break;
         }
+        break;
+        case 'R': {  /*---- ROOK ----*/
 
-        case 'R': {
             int directions[4][2] = {
                     {-1, 0},  // Up
                     {1,  0},  // Down
                     {0, -1},  // Left
                     {0,  1}   // Right
             };
+
             for (int i = 0; i < 4; i++) {  // For all directions
                 int r = row, c = col;
 
@@ -67,7 +69,26 @@ void set_legal_moves(Board *board, int row, int col) {
             }
         }
             break;
-        case 'N':
+        case 'N': {  /*---- KNIGHT ----*/
+
+            int directions[8][2] = {
+                    {-2, -1}, {-2,  1},  // Up-left,   Up-right
+                    { 2, -1}, { 2,  1},  // Down-left, Down-right
+                    {-1, -2}, { 1, -2},  // Left-up,   Left-down
+                    {-1,  2}, { 1,  2}   // Right-up,  Right-down
+            };
+
+            for (int i = 0; i < 8; i++) {
+                int r = row + directions[i][0];
+                int c = col + directions[i][1];
+
+                if (c >= 0 && c <= 7 && r >= 0 && r <= 7) {
+                    if (board->squares[r][c].piece == NULL  ||  board->squares[r][c].piece->color != color ) {
+                        board->squares[r][c].legal_move = true;
+                    }
+                }
+            }
+        }
             break;
         case 'B':
             break;
