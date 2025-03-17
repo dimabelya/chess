@@ -11,7 +11,6 @@ int main() {
     load_piece_textures();
     Board board;
     init_board(&board);
-    print_board(&board);
 
     // select_piece
     int selected_row = -1, selected_col = -1;

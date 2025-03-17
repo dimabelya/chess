@@ -98,6 +98,7 @@ void init_board(Board *board) {
             }
         }
     }
+
     printf("Initialization of board done.\n");
 }
 
@@ -126,23 +127,6 @@ void free_board(Board *board) {
 }
 
 
-void print_board(Board *board) {
-    // print board: bring last row first..
-    for (int i = 0; i < 8; i++) {    // each col (left to right)
-        for (int j = 0; j < 8; j++) {  // each row (top to bottom)
-            if (board->squares[i][j].piece != NULL) {
-                char type = board->squares[i][j].piece->type;
-                char color = board->squares[i][j].piece->color;
-                printf("%c%c ", color, type);
-            } else {
-                printf("-- ");
-            }
-        }
-        printf("\n");
-    }
-}
-
-
 void draw_board(Board *board) {
     for (int row = 0; row < 8; row++) {
         for (int col = 0; col < 8; col++) {
@@ -155,8 +139,6 @@ void draw_board(Board *board) {
             // Coordinates of top-left of each square
             int x = col * SQUARE_SIZE + EXTRA_WIDTH/2;
             int y = row * SQUARE_SIZE + EXTRA_HEIGHT/2;
-            // int x = col * SQUARE_SIZE;
-            // int y = row * SQUARE_SIZE;
             DrawRectangle(x, y, SQUARE_SIZE, SQUARE_SIZE, square_color);
         }
     }

@@ -24,6 +24,7 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
                 *is_piece_selected = false;
                 reset_legal_moves(board);
                 board->squares[dest_x][dest_y].piece->moves += 1;
+
             }
             // Moving to nonempty square
             else {
@@ -34,6 +35,7 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
                     if (board->squares[dest_x][dest_y].piece->color == 'B') {
                         board->captured.white_captured_count += 1;
                         board->captured.white_capture[board->captured.white_captured_count] = board->squares[dest_x][dest_y].piece;
+
                     }
                     // Black capturing white
                     if (board->squares[dest_x][dest_y].piece->color == 'W') {

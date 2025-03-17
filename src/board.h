@@ -25,6 +25,8 @@ typedef struct {
 typedef struct {
     Piece *piece;
     bool legal_move;
+    bool attacked_by_white;
+    bool attacked_by_black;
 } Square;
 
 
@@ -36,9 +38,10 @@ typedef struct {
 
 void load_piece_textures();
 void unload_piece_textures();
+
 void init_board(Board *board);
 void free_board(Board *board);
-void print_board(Board *board);
+
 void draw_board(Board *board);
 void draw_pieces(Board *board);
 

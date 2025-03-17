@@ -2,6 +2,7 @@
 #include "game.h"
 #include <stdio.h>
 
+
 void set_legal_moves(Board *board, int row, int col) {
     char type = board->squares[row][col].piece->type;
     char color = board->squares[row][col].piece->color;
@@ -40,10 +41,10 @@ void set_legal_moves(Board *board, int row, int col) {
         case 'R': {  /*---- ROOK ----*/
 
             int directions[4][2] = {
-                    {-1, 0},  // Up
-                    {1,  0},  // Down
-                    {0, -1},  // Left
-                    {0,  1}   // Right
+                    {-1,  0},  // Up
+                    { 1,  0},  // Down
+                    { 0, -1},  // Left
+                    { 0,  1}   // Right
             };
 
             for (int i = 0; i < 4; i++) {  // For all directions
@@ -52,7 +53,7 @@ void set_legal_moves(Board *board, int row, int col) {
                 while (true) {
                     r += directions[i][0];
                     c += directions[i][1];
-                    if (r < 0 || r >= 8 || c < 0 || c >= 8) break;
+                    if (r < 0 || r > 7 || c < 0 || c > 7) break;
 
                     // Empty square
                     if (board->squares[r][c].piece == NULL) {
@@ -90,11 +91,103 @@ void set_legal_moves(Board *board, int row, int col) {
             }
         }
             break;
-        case 'B':
+        case 'B': {  /*---- BISHOP ----*/
+
+            int directions[4][2] = {
+                    {-1, -1},  // Up-left
+                    {-1,  1},  // Up-right
+                    { 1, -1},  // Down-left
+                    { 1,  1},  // Down-right
+            };
+
+            for (int i = 0; i < 4; i++) {
+                int r = row, c = col;
+
+                while (true) {
+                    r += directions[i][0];
+                    c += directions[i][1];
+
+                    if (r < 0 || r > 7 || c < 0 || c > 7) break;
+
+                    // Empty square
+                    if (board->squares[r][c].piece == NULL) {
+                        board->squares[r][c].legal_move = true;
+                    }
+                    // Capture, stop
+                    else if (board->squares[r][c].piece->color != color) {
+                        board->squares[r][c].legal_move = true;
+                        break;
+                    }
+                    // Same color, stop
+                    else break;
+                }
+            }
+        }
             break;
-        case 'Q':
+        case 'Q': {  /*---- QUEEN ----*/
+
+            int directions[8][2] = {
+                    {-1,  0},  // Up
+                    { 1,  0},  // Down
+                    { 0, -1},  // Left
+                    { 0,  1},  // Right
+                    {-1, -1},  // Up-left
+                    {-1,  1},  // Up-right
+                    { 1, -1},  // Down-left
+                    { 1,  1},  // Down-right
+            };
+
+            for (int i = 0; i < 8; i++) {  // For all directions
+                int r = row, c = col;
+
+                while (true) {
+                    r += directions[i][0];
+                    c += directions[i][1];
+                    if (r < 0 || r > 7 || c < 0 || c > 7) break;
+
+                    // Empty square
+                    if (board->squares[r][c].piece == NULL) {
+                        board->squares[r][c].legal_move = true;
+                    }
+                    // Capture, stop
+                    else if (board->squares[r][c].piece->color != color) {
+                        board->squares[r][c].legal_move = true;
+                        break;
+                    }
+                    // Same color, stop
+                    else break;
+                }
+            }
+        }
             break;
-        case 'K':
+        case 'K': {  /*---- KING ----*/
+
+            int directions[8][2] = {
+                    {-1,  0},  // Up
+                    { 1,  0},  // Down
+                    { 0, -1},  // Left
+                    { 0,  1},  // Right
+                    {-1, -1},  // Up-left
+                    {-1,  1},  // Up-right
+                    { 1, -1},  // Down-left
+                    { 1,  1},  // Down-right
+            };
+
+            for (int i = 0; i < 8; i++) {
+                int r = row + directions[i][0];
+                int c = col + directions[i][1];
+
+                if (c >= 0 && c <= 7 && r >= 0 && r <= 7) {
+                    if (board->squares[r][c].piece == NULL  ||
+                        board->squares[r][c].piece->color != color ) {
+                        // TODO: further check so king can move to safe squares only
+                        board->squares[r][c].legal_move = true;
+
+
+                    }
+                }
+            }
+        }
             break;
         default:
             printf("ERROR: set_legal_moves() unable to find piece type.");
