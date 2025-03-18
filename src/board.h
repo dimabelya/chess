@@ -36,6 +36,11 @@ typedef struct {
 } Board;
 
 
+typedef struct {
+    bool positions[8][8];
+} Position;
+
+
 void load_piece_textures();
 void unload_piece_textures();
 
@@ -44,6 +49,8 @@ void free_board(Board *board);
 
 void draw_board(Board *board);
 void draw_pieces(Board *board);
+
+void reset_positions(Position *p);
 
 
 #endif

@@ -17,6 +17,7 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
                 *is_piece_selected = false;
                 reset_legal_moves(board);
             }
+
             // Moving to empty square
             if (board->squares[dest_x][dest_y].piece == NULL && board->squares[dest_x][dest_y].legal_move) {
                 board->squares[dest_x][dest_y].piece = board->squares[*cur_x][*cur_y].piece;
@@ -70,7 +71,9 @@ void highlight_square(Board *board, int cur_x, int cur_y, bool is_piece_selected
         DrawRectangleLinesEx(r, 5, BLUE);
 
 
-        set_legal_moves(board, cur_x, cur_y);
+        // set_legal_moves(board, cur_x, cur_y);
+        set_legal_moves_2(board, cur_x, cur_y);
+
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
