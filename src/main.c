@@ -17,6 +17,7 @@ int main() {
     bool is_piece_selected = false;
 
 
+
     // Main game loop
     while (!WindowShouldClose()) {
 
