@@ -30,7 +30,7 @@ int main() {
         highlight_square(&board, selected_row, selected_col, is_piece_selected);
         select_piece(&board, &selected_row, &selected_col, &is_piece_selected);
 
-        display_captured(&board);
+        draw_captured(&board);
 
         EndDrawing();
     }

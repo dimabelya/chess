@@ -98,7 +98,6 @@ void init_board(Board *board) {
             }
         }
     }
-
     printf("Initialization of board done.\n");
 }
 
@@ -124,56 +123,6 @@ void free_board(Board *board) {
         }
     }
     printf("Board memory freed.\n");
-}
-
-
-void draw_board(Board *board) {
-    for (int row = 0; row < 8; row++) {
-        for (int col = 0; col < 8; col++) {
-            Color square_color;
-            if ((row + col) % 2 == 0) {
-                square_color = LIGHTGRAY;
-            } else {
-                square_color = DARKGRAY;
-            }
-            // Coordinates of top-left of each square
-            int x = col * SQUARE_SIZE + EXTRA_WIDTH/2;
-            int y = row * SQUARE_SIZE + EXTRA_HEIGHT/2;
-            DrawRectangle(x, y, SQUARE_SIZE, SQUARE_SIZE, square_color);
-        }
-    }
-}
-
-
-void draw_pieces(Board *board) {
-    for (int row = 0; row < 8; row++) {
-        for (int col = 0; col < 8; col++) {
-
-            Piece *p = board->squares[row][col].piece;
-            if (p != NULL) {
-                // Top left coordinates of each square
-                float x = (float)col * SQUARE_SIZE;
-                float y = (float)row * SQUARE_SIZE;
-
-                // Scaled widths and heights of each texture
-                float p_width = (float)p->texture.width * SCALE;
-                float p_height = (float)p->texture.height * SCALE;
-
-                // Centered coordinates within each square
-                float center_x = (SQUARE_SIZE - p_width)/2 + (float)EXTRA_WIDTH/2;
-                float center_y = (SQUARE_SIZE - p_height)/2 + (float)EXTRA_HEIGHT/2;
-
-                // Coordinates get shifted for each square
-                Vector2 v = (Vector2){x + center_x, y + center_y};
-
-                if (p->texture.id != 0) {
-                    DrawTextureEx(p->texture, v, 0.0f, SCALE, WHITE);
-                } else {
-                    printf("ERROR: Texture not set for piece at [%d][%d]\n", row, col);
-                }
-            }
-        }
-    }
 }
 
 

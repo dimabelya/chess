@@ -9,7 +9,7 @@
 typedef struct {
     char type;     // 'P' Pawn, 'R' Rook, 'N' Knight, 'B' Bishop, 'Q' Queen, 'K' King.
     char color;    // 'W' White, 'B' Black.
-    int moves;     // for castling and en passant
+    int moves;     // For castling and en passant
     Texture2D texture;
 } Piece;
 
@@ -41,15 +41,11 @@ typedef struct {
 } Position;
 
 
+Piece *create_piece(char type, char color);
 void load_piece_textures();
 void unload_piece_textures();
-
 void init_board(Board *board);
 void free_board(Board *board);
-
-void draw_board(Board *board);
-void draw_pieces(Board *board);
-
 void reset_positions(Position *p);
 
 
