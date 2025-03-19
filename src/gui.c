@@ -70,9 +70,7 @@ void highlight_square(Board *board, int cur_x, int cur_y, bool is_piece_selected
         Rectangle r = {box_x, box_y, SQUARE_SIZE, SQUARE_SIZE};
         DrawRectangleLinesEx(r, 5, BLUE);
 
-
         set_legal_moves(board, cur_x, cur_y);
-
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {
@@ -108,7 +106,7 @@ void draw_captured(Board *board) {
             float p_width = (float)p->texture.width * SCALE;
             float p_height = (float)p->texture.height * SCALE;
 
-            float draw_x = (i * p_width * 0.5);
+            float draw_x = (float)((float)i * p_width * 0.5);
             float draw_y = y1 - 0.5*(p_height/2);
             Vector2 v = {draw_x, draw_y};
 

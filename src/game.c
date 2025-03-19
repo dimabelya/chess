@@ -196,7 +196,6 @@ void get_potential_positions(Board *board, int row, int col, Position *p) {
 
 
 void set_legal_moves(Board *board, int row, int col) {
-    // get_potential_positions(Board *board, int row, int col, bool potential_positions[8][8])
     Position p;
     reset_positions(&p);
     get_potential_positions(board, row, col, &p);
@@ -204,7 +203,13 @@ void set_legal_moves(Board *board, int row, int col) {
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (p.positions[i][j]) {
+                // Default
                 board->squares[i][j].legal_move = true;
+
+                // Assure king can only move to safe squares
+                if (board->squares[row][col].piece->type == 'K') {
+                    board->squares[i][j].legal_move = moving_king_safe(board, row, col, i, j);
+                }
             }
         }
     }
@@ -220,4 +225,44 @@ void reset_legal_moves(Board *board) {
     }
 }
 
+// {row, col} from,  {i, j} to
+bool moving_king_safe(Board *board, int row, int col, int i, int j) {
+    bool result = true;
+    // Temporarily move the king
+    Piece *king = board->squares[row][col].piece;
+    Piece *enemy = board->squares[i][j].piece;
+    board->squares[i][j].piece = king;
+    board->squares[row][col].piece = NULL;
 
+    // For all enemy pieces
+    for (int r = 0; r < 8; r++) {
+        for (int c = 0; c < 8; c++) {
+            if (board->squares[r][c].piece  &&
+                board->squares[r][c].piece->color != king->color) {
+                // Check if it can attack the king at [i][j]
+                Position attacker_ps;
+                reset_positions(&attacker_ps);
+                get_potential_positions(board, r, c, &attacker_ps);
+
+                if (attacker_ps.positions[i][j]) {
+                    result = false;
+                    break;
+                }
+
+            }
+        }
+        if (!result) break;
+    }
+
+    // Restore the board
+    board->squares[row][col].piece = king;
+    board->squares[i][j].piece = enemy;
+
+    return result;
+}
+
+
+bool is_king_safe(Board *board, char king_color) {
+
+    return false;
+}

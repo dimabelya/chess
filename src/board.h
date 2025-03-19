@@ -25,8 +25,6 @@ typedef struct {
 typedef struct {
     Piece *piece;
     bool legal_move;
-    bool attacked_by_white;
-    bool attacked_by_black;
 } Square;
 
 

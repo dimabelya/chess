@@ -7,30 +7,27 @@
 
 int main() {
 
+    // Variables for select_piece
+    int selected_row = -1;
+    int selected_col = -1;
+    bool is_piece_selected = false;
+
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
     load_piece_textures();
     Board board;
     init_board(&board);
 
-    // select_piece
-    int selected_row = -1, selected_col = -1;
-    bool is_piece_selected = false;
-
-
-
     // Main game loop
     while (!WindowShouldClose()) {
-
         BeginDrawing();
-        ClearBackground(DARKBROWN);
 
+        ClearBackground(DARKBROWN);
         draw_board(&board);
         draw_pieces(&board);
+        draw_captured(&board);
 
         highlight_square(&board, selected_row, selected_col, is_piece_selected);
         select_piece(&board, &selected_row, &selected_col, &is_piece_selected);
-
-        draw_captured(&board);
 
         EndDrawing();
     }

@@ -12,4 +12,5 @@ void draw_captured(Board *board);
 void draw_board(Board *board);
 void draw_pieces(Board *board);
 
+
 #endif //CHESS_GUI_H
