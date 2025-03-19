@@ -200,6 +200,8 @@ void set_legal_moves(Board *board, int row, int col) {
     reset_positions(&p);
     get_potential_positions(board, row, col, &p);
 
+
+
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (p.positions[i][j]) {
@@ -213,7 +215,6 @@ void set_legal_moves(Board *board, int row, int col) {
             }
         }
     }
-
 }
 
 
@@ -238,7 +239,7 @@ bool moving_king_safe(Board *board, int from_row, int from_col, int to_row, int 
     // For all enemy pieces
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
-            if (board->squares[i][j].piece &&
+            if (board->squares[i][j].piece  &&
                 board->squares[i][j].piece->color != king->color) {
 
                 Position attacker_ps;
@@ -247,13 +248,13 @@ bool moving_king_safe(Board *board, int from_row, int from_col, int to_row, int 
 
                 if (attacker_ps.positions[to_row][to_col]) {
                     result = false;
-                    break;
+                    goto found;
                 }
             }
         }
-        if (!result) break;
     }
-
+    found:
+    // Found at least one enemy piece attacking king's destination
     // Restore the board
     board->squares[from_row][from_col].piece = king;
     board->squares[to_row][to_col].piece = destination;
@@ -261,7 +262,55 @@ bool moving_king_safe(Board *board, int from_row, int from_col, int to_row, int 
 }
 
 
-bool is_king_safe(Board *board, char king_color) {
+bool is_king_safe_2(Board *board, char king_color) {
+    // Get kings location
+    int king_row = -1;
+    int king_col = -1;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (board->squares[i][j].piece  &&
+                board->squares[i][j].piece->type == 'K'  &&
+                board->squares[i][j].piece->color == king_color) {
+                // Found the right king
+                king_row = i;
+                king_col = j;
+                goto found_king;
+            }
+        }
+    }
+    found_king:
+    // For all enemy pieces
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (board->squares[i][j].piece &&
+                board->squares[i][j].piece->color != king_color) {
+                Position p;
+                reset_positions(&p);
+                get_potential_positions(board, i, j, &p);
 
-    return false;
+                if (p.positions[king_row][king_col]) return false;
+            }
+        }
+    }
+    return true;
+}
+
+
+bool is_king_safe(Board *board, int row, int col) {
+    char king_color = board->squares[row][col].piece->color;
+
+    // For all enemy pieces
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (board->squares[i][j].piece &&
+                board->squares[i][j].piece->color != king_color) {
+                Position p;
+                reset_positions(&p);
+                get_potential_positions(board, i, j, &p);
+
+                if (p.positions[row][col]) return false;
+            }
+        }
+    }
+    return true;
 }
