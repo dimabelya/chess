@@ -225,39 +225,38 @@ void reset_legal_moves(Board *board) {
     }
 }
 
-// {row, col} from,  {i, j} to
-bool moving_king_safe(Board *board, int row, int col, int i, int j) {
+
+bool moving_king_safe(Board *board, int from_row, int from_col, int to_row, int to_col) {
     bool result = true;
+
     // Temporarily move the king
-    Piece *king = board->squares[row][col].piece;
-    Piece *enemy = board->squares[i][j].piece;
-    board->squares[i][j].piece = king;
-    board->squares[row][col].piece = NULL;
+    Piece *king = board->squares[from_row][from_col].piece;
+    Piece *destination = board->squares[to_row][to_col].piece;
+    board->squares[to_row][to_col].piece = king;
+    board->squares[from_row][from_col].piece = NULL;
 
     // For all enemy pieces
-    for (int r = 0; r < 8; r++) {
-        for (int c = 0; c < 8; c++) {
-            if (board->squares[r][c].piece  &&
-                board->squares[r][c].piece->color != king->color) {
-                // Check if it can attack the king at [i][j]
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (board->squares[i][j].piece &&
+                board->squares[i][j].piece->color != king->color) {
+
                 Position attacker_ps;
                 reset_positions(&attacker_ps);
-                get_potential_positions(board, r, c, &attacker_ps);
+                get_potential_positions(board, i, j, &attacker_ps);
 
-                if (attacker_ps.positions[i][j]) {
+                if (attacker_ps.positions[to_row][to_col]) {
                     result = false;
                     break;
                 }
-
             }
         }
         if (!result) break;
     }
 
     // Restore the board
-    board->squares[row][col].piece = king;
-    board->squares[i][j].piece = enemy;
-
+    board->squares[from_row][from_col].piece = king;
+    board->squares[to_row][to_col].piece = destination;
     return result;
 }
 
