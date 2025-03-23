@@ -22,7 +22,7 @@ int main() {
         BeginDrawing();
 
         ClearBackground(DARKBROWN);
-        draw_board(&board);
+        draw_board();
         draw_pieces(&board);
         draw_captured(&board);
 

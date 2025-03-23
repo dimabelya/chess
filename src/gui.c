@@ -95,9 +95,9 @@ void draw_captured(Board *board) {
     int white_count = board->captured.white_captured_count;
 
     // bottom left
-    int x1 = 0;
+    // int x1 = 0;
     int y1 = SCREEN_HEIGHT - EXTRA_HEIGHT/4;
-    //DrawCircle(x1, y1, 5, RED);
+    // DrawCircle(x1, y1, 5, RED);
 
     for (int i = 0; i <= white_count; i++) {
         Piece *p = board->captured.white_capture[i];
@@ -107,21 +107,20 @@ void draw_captured(Board *board) {
             float p_height = (float)p->texture.height * SCALE;
 
             float draw_x = (float)((float)i * p_width * 0.5);
-            float draw_y = y1 - 0.5*(p_height/2);
+            float draw_y = (float)(y1 - 0.5*(p_height/2));
             Vector2 v = {draw_x, draw_y};
 
             if (p->texture.id != 0) {
                 DrawTextureEx(p->texture, v, 0.0f, SCALE*0.5, WHITE);
             }
         }
-
     }
 
     // Display the pieces that black captured
     int black_count = board->captured.black_captured_count;
 
     // bottom left
-    int x2 = 0;
+    // int x2 = 0;
     int y2 = EXTRA_HEIGHT/4;
     // DrawCircle(x1, y2, 5, RED);
 
@@ -132,8 +131,8 @@ void draw_captured(Board *board) {
             float p_width = (float)p->texture.width * SCALE;
             float p_height = (float)p->texture.height * SCALE;
 
-            float draw_x = (i * p_width * 0.5);
-            float draw_y = y2 - 0.5*(p_height/2);
+            float draw_x = (float)((float)i * p_width * 0.5);
+            float draw_y = (float)(y2 - 0.5*(p_height/2));
             Vector2 v = {draw_x, draw_y};
 
             if (p->texture.id != 0) {
@@ -145,7 +144,7 @@ void draw_captured(Board *board) {
 }
 
 
-void draw_board(Board *board) {
+void draw_board() {
     for (int row = 0; row < 8; row++) {
         for (int col = 0; col < 8; col++) {
             Color square_color;

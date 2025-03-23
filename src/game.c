@@ -3,8 +3,6 @@
 #include <stdio.h>
 
 
-
-// refactoring set_legal_positions to get_potential_positions
 void get_potential_positions(Board *board, int row, int col, Position *p) {
     char type = board->squares[row][col].piece->type;
     char color = board->squares[row][col].piece->color;
@@ -195,22 +193,39 @@ void get_potential_positions(Board *board, int row, int col, Position *p) {
 }
 
 
-void set_legal_moves(Board *board, int row, int col) {
+void set_legal_moves(Board *board, int from_row, int from_col) {
     Position p;
     reset_positions(&p);
-    get_potential_positions(board, row, col, &p);
+    get_potential_positions(board, from_row, from_col, &p);
 
+    // Get king location
+    int king_row, king_col = -1;
+    char color = board->squares[from_row][from_col].piece->color;
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (board->squares[i][j].piece &&
+                board->squares[i][j].piece->color == color &&
+                board->squares[i][j].piece->type == 'K') {
 
+                king_row = i;
+                king_col = j;
+            }
+        }
+    }
+    if (!is_king_safe(board, king_row, king_col)) {
+        // TODO: Force to block attack
+
+        printf("Force to defend the king\n");
+    }
 
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (p.positions[i][j]) {
                 // Default
                 board->squares[i][j].legal_move = true;
-
                 // Assure king can only move to safe squares
-                if (board->squares[row][col].piece->type == 'K') {
-                    board->squares[i][j].legal_move = moving_king_safe(board, row, col, i, j);
+                if (board->squares[from_row][from_col].piece->type == 'K') {
+                    board->squares[i][j].legal_move = moving_king_safe(board, from_row, from_col, i, j);
                 }
             }
         }
@@ -262,40 +277,6 @@ bool moving_king_safe(Board *board, int from_row, int from_col, int to_row, int 
 }
 
 
-bool is_king_safe_2(Board *board, char king_color) {
-    // Get kings location
-    int king_row = -1;
-    int king_col = -1;
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (board->squares[i][j].piece  &&
-                board->squares[i][j].piece->type == 'K'  &&
-                board->squares[i][j].piece->color == king_color) {
-                // Found the right king
-                king_row = i;
-                king_col = j;
-                goto found_king;
-            }
-        }
-    }
-    found_king:
-    // For all enemy pieces
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (board->squares[i][j].piece &&
-                board->squares[i][j].piece->color != king_color) {
-                Position p;
-                reset_positions(&p);
-                get_potential_positions(board, i, j, &p);
-
-                if (p.positions[king_row][king_col]) return false;
-            }
-        }
-    }
-    return true;
-}
-
-
 bool is_king_safe(Board *board, int row, int col) {
     char king_color = board->squares[row][col].piece->color;
 
@@ -314,3 +295,12 @@ bool is_king_safe(Board *board, int row, int col) {
     }
     return true;
 }
+
+
+bool force_uncheck(Board* board, int row, int col) {
+    // [row][col] is the kings location that is currently checked
+    // update board [for the king's color] to only have legal moves that cancel the check
+    // if can't uncheck, then its mate
+    return false;
+}
+

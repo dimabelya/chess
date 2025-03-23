@@ -13,7 +13,6 @@ typedef struct {
     Texture2D texture;
 } Piece;
 
-
 typedef struct {
     Piece *white_capture[16];  // Set of black pieces that white captured
     Piece *black_capture[16];  // Set of white pieces that black captured
@@ -21,23 +20,19 @@ typedef struct {
     int black_captured_count;  // Number of white pieces that black captured
 } CapturedPieces;
 
-
 typedef struct {
     Piece *piece;
     bool legal_move;
 } Square;
-
 
 typedef struct {
     Square squares[8][8];
     CapturedPieces captured;
 } Board;
 
-
 typedef struct {
     bool positions[8][8];
 } Position;
-
 
 Piece *create_piece(char type, char color);
 void load_piece_textures();
