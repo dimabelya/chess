@@ -7,10 +7,15 @@
 
 
 typedef struct {
+    bool positions[8][8];
+} Position;
+
+typedef struct {
     char type;     // 'P' Pawn, 'R' Rook, 'N' Knight, 'B' Bishop, 'Q' Queen, 'K' King.
     char color;    // 'W' White, 'B' Black.
     int moves;     // For castling and en passant
     Texture2D texture;
+    Position legal_moves;
 } Piece;
 
 typedef struct {
@@ -30,9 +35,6 @@ typedef struct {
     CapturedPieces captured;
 } Board;
 
-typedef struct {
-    bool positions[8][8];
-} Position;
 
 Piece *create_piece(char type, char color);
 void load_piece_textures();

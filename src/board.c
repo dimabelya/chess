@@ -8,7 +8,7 @@ Texture2D piece_textures[12];
 
 
 Piece *create_piece(char type, char color) {
-    Piece *piece = (Piece *) malloc(sizeof(Piece));
+    Piece *piece = (Piece *)malloc(sizeof(Piece));
     if (!piece) {
         printf("ERROR: Memory allocation failed.\n");
         exit(1);
