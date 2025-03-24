@@ -70,9 +70,7 @@ void highlight_square(Board *board, int cur_x, int cur_y, bool is_piece_selected
         Rectangle r = {box_x, box_y, SQUARE_SIZE, SQUARE_SIZE};
         DrawRectangleLinesEx(r, 5, BLUE);
 
-        // set_legal_moves(board, cur_x, cur_y);
-        set_legal_moves_2(board, cur_x, cur_y);
-
+        set_legal_moves(board, cur_x, cur_y);
 
         for (int row = 0; row < 8; row++) {
             for (int col = 0; col < 8; col++) {

@@ -12,6 +12,8 @@ add_executable(chess src/main.c
                      src/game.c
                      src/game.h
                      src/constants.h
+        src/gameplay.c
+        src/gameplay.h
 )
 
 target_link_libraries(chess raylib)

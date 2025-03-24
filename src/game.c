@@ -214,38 +214,6 @@ Coordinate find_king(Board *board, char color) {
 void set_legal_moves(Board *board, int from_row, int from_col) {
     char color = board->squares[from_row][from_col].piece->color;
     Coordinate c = find_king(board, color);
-
-    if (c.row == -1 || c.col == -1 ) { printf("King Gone\n"); return; }
-
-    if (!is_king_safe(board, c.row, c.col)) {
-        // TODO: Force to block attack
-        printf("Force to defend the king\n");
-        force_uncheck(board, c.row, c.col);
-        return;
-    }
-
-    Position p;
-    reset_positions(&p);
-    get_potential_positions(board, from_row, from_col, &p);
-
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (p.positions[i][j]) {
-                // Default
-                board->squares[i][j].legal_move = true;
-                // Assure king can only move to safe squares
-                if (board->squares[from_row][from_col].piece->type == 'K') {
-                    board->squares[i][j].legal_move = moving_king_safe(board, from_row, from_col, i, j);
-                }
-            }
-        }
-    }
-}
-
-
-void set_legal_moves_2(Board *board, int from_row, int from_col) {
-    char color = board->squares[from_row][from_col].piece->color;
-    Coordinate c = find_king(board, color);
     if (c.row == -1 || c.col == -1 ) { printf("King Gone\n"); return; }
 
     if (is_king_safe(board, c.row, c.col)) {
@@ -274,15 +242,7 @@ void set_legal_moves_2(Board *board, int from_row, int from_col) {
                     board->squares[i][j].piece = destination;                     // restore the destination
 
 
-                    // Default
-                    if (safe) {
-                        board->squares[i][j].legal_move = true;
-                    }
-
-                    // Assure king can only move to safe squares
-                    if (board->squares[from_row][from_col].piece->type == 'K') {
-                        board->squares[i][j].legal_move = moving_king_safe(board, from_row, from_col, i, j);
-                    }
+                    if (safe) board->squares[i][j].legal_move = true;
                 }
             }
         }
@@ -405,50 +365,6 @@ bool is_king_safe(Board *board, int row, int col) {
         }
     }
     return true;
-}
-
-
-void force_uncheck(Board* board, int row, int col) {
-    // king_location = [row][col]
-    char king_color = board->squares[row][col].piece->color;
-
-    // For all pieces of the same color
-    for (int i = 0; i < 8; i++) {
-        for (int j = 0; j < 8; j++) {
-            if (board->squares[i][j].piece  &&  board->squares[i][j].piece->color == king_color) {
-                // Get potential positions
-                Position p;
-                reset_positions(&p);
-                get_potential_positions(board, i, j, &p);
-
-                // For all potential positions of piece [i][j]
-                for (int ii = 0; ii < 8; ii++) {
-                    for (int jj = 0; jj < 8; jj++) {
-                        if (p.positions[ii][jj]) {
-
-                            // 1. simulate the move
-                            Piece *destination = board->squares[ii][jj].piece;          // save destination piece
-                            board->squares[ii][jj].piece = board->squares[i][j].piece;  // move piece [i][j] over
-                            board->squares[i][j].piece = NULL;                          // erase the piece that was moved
-
-                            // 2a. check if it unchecks king
-                            Coordinate c = find_king(board, king_color);
-                            bool safe = is_king_safe(board, c.row, c.col);
-
-                            // 2b. set result
-                            board->squares[ii][jj].legal_move = safe;
-
-                            // 3. restore the board
-                            board->squares[i][j].piece = board->squares[ii][jj].piece;  // move the piece back
-                            board->squares[ii][jj].piece = destination;                     // restore the destination
-
-
-                        }
-                    }
-                }
-            }
-        }
-    }
 }
 
 
