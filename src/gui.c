@@ -13,7 +13,8 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
 
         if (*is_piece_selected) {
             // Unselecting
-            if (board->squares[dest_x][dest_y].piece == board->squares[*cur_x][*cur_y].piece) {
+            if (board->squares[*cur_x][*cur_y].piece == board->squares[dest_x][dest_y].piece ||
+                !board->squares[dest_x][dest_y].legal_move) {
                 *is_piece_selected = false;
                 reset_legal_moves(board);
             }
@@ -25,10 +26,9 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
                 *is_piece_selected = false;
                 reset_legal_moves(board);
                 board->squares[dest_x][dest_y].piece->moves += 1;
+                board->turn= !board->turn;
 
-            }
-            // Moving to nonempty square
-            else {
+            } else {  // Moving to nonempty square
                 // check if the dest is legal
                 if (board->squares[dest_x][dest_y].legal_move == true) {
                     // Add dest piece to players captured set and increment num of captured
@@ -36,7 +36,6 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
                     if (board->squares[dest_x][dest_y].piece->color == 'B') {
                         board->captured.white_captured_count += 1;
                         board->captured.white_capture[board->captured.white_captured_count] = board->squares[dest_x][dest_y].piece;
-
                     }
                     // Black capturing white
                     if (board->squares[dest_x][dest_y].piece->color == 'W') {
@@ -49,14 +48,18 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
                     *is_piece_selected = false;
                     reset_legal_moves(board);
                     board->squares[dest_x][dest_y].piece->moves += 1;
+                    board->turn= !board->turn;
                 }
             }
         }
         // If no piece is selected and mouse click on nonempty square
-        else if (board->squares[dest_x][dest_y].piece != NULL) {
-            *cur_x = dest_x;
-            *cur_y = dest_y;
-            *is_piece_selected = true;
+        else if (board->squares[dest_x][dest_y].piece) {
+            if ((board->turn && board->squares[dest_x][dest_y].piece->color == 'W') ||
+                (!board->turn && board->squares[dest_x][dest_y].piece->color == 'B')) {
+                *cur_x = dest_x;
+                *cur_y = dest_y;
+                *is_piece_selected = true;
+            }
         }
     }
 }
@@ -192,3 +195,44 @@ void draw_pieces(Board *board) {
         }
     }
 }
+
+
+void draw_turn(Board *board) {
+    int y = SCREEN_HEIGHT/2;
+    int x = EXTRA_WIDTH/4;
+    int text_width = MeasureText("Turn", 10);
+
+    DrawText("Turn", x-(text_width/2), y-30, 10, BLACK);
+    DrawCircle(x, y, 13, GRAY);
+
+    if (board->turn) {
+        DrawCircle(x, y, 10, WHITE);
+    } else {
+        DrawCircle(x, y, 10, BLACK);
+    }
+
+}
+
+
+void draw_mate(Board *board) {
+    if (board->mate) {
+        // color is for the player that is being mated
+        int y = SCREEN_HEIGHT/2;
+        int x = SCREEN_WIDTH - (EXTRA_WIDTH/4);
+        int text_width = MeasureText("Winner", 10);
+        int text2_width = MeasureText("Game Over", 15);
+
+        DrawText("Game Over", x-(text2_width/2), y-50, 15, RED);
+        DrawText("Winner", x-(text_width/2), y-30, 10, BLACK);
+        DrawCircle(x, y, 13, GRAY);
+
+        // true: white,  false: black
+        // so if black's turn, white wins
+        if (board->turn == false) {
+            DrawCircle(x, y, 10, WHITE);
+        } else {
+            DrawCircle(x, y, 10, BLACK);
+        }
+    }
+}
+

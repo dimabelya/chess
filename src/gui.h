@@ -11,6 +11,8 @@ void highlight_square(Board *board, int cur_x, int cur_y, bool is_piece_selected
 void draw_captured(Board *board);
 void draw_board();
 void draw_pieces(Board *board);
+void draw_turn(Board *board);
+void draw_mate(Board *board);
 
 
 #endif //CHESS_GUI_H

@@ -16,6 +16,7 @@ void set_legal_moves(Board *board, int from_row, int from_col);
 void reset_legal_moves(Board *board);
 bool moving_king_safe(Board *board, int row, int from_col, int to_row, int to_col);
 bool is_king_safe(Board *board, int row, int col);
+bool check_mate(Board *board, char color);
 
 
 #endif //CHESS_GAME_H

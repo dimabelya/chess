@@ -1,5 +1,6 @@
 
 #include "game.h"
+#include "gui.h"
 #include <stdio.h>
 
 
@@ -246,14 +247,14 @@ void set_legal_moves(Board *board, int from_row, int from_col) {
                 }
             }
         }
-    } else {  // Force king to uncheck
+    } else {  // Force king to uncheck -----
         printf("King checked.\n");
 
         // For all pieces of the same color
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (board->squares[i][j].piece && board->squares[i][j].piece->color == color) {
-                    // Looking at piece [i][j], save Piece->(Position)legal_moves
+                    // Looking at piece [i][j], save Piece->(Position)legal_positions
                     Position p;
                     reset_positions(&p);
                     get_potential_positions(board, i, j, &p);
@@ -281,12 +282,13 @@ void set_legal_moves(Board *board, int from_row, int from_col) {
                             }
                         }
                     }
-                    board->squares[i][j].piece->legal_moves = p;  // Save positions that will uncheck the king
+                    board->squares[i][j].piece->legal_positions = p;  // Save positions that will uncheck the king
                 }
             }
         }
-        // All safe positions saved, use them
-        Position pp = board->squares[from_row][from_col].piece->legal_moves;
+
+        // All safe positions saved, use them to update legal_move of each square
+        Position pp = board->squares[from_row][from_col].piece->legal_positions;
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 if (pp.positions[i][j]) {
@@ -299,7 +301,9 @@ void set_legal_moves(Board *board, int from_row, int from_col) {
                 }
             }
         }
-
+        // End of force king to uncheck -----
+        bool mate = check_mate(board, color);
+        if (mate) { board->mate = mate; }
     }
 }
 
@@ -367,4 +371,31 @@ bool is_king_safe(Board *board, int row, int col) {
     return true;
 }
 
+
+bool check_mate(Board *board, char color) {
+    bool mate = true;
+
+    // For all pieces of the same color
+    for (int i = 0; i < 8; i++) {
+        for (int j = 0; j < 8; j++) {
+            if (board->squares[i][j].piece &&
+                board->squares[i][j].piece->color == color) {
+
+                Position p = board->squares[i][j].piece->legal_positions;
+
+                // For all potential moves, only save the ones that protect the king
+                for (int ii = 0; ii < 8; ii++) {
+                    for (int jj = 0; jj < 8; jj++) {
+                        if (p.positions[ii][jj]) {
+                            mate = false;
+                            goto end;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    end:
+    return mate;
+}
 

@@ -15,7 +15,7 @@ typedef struct {
     char color;    // 'W' White, 'B' Black.
     int moves;     // For castling and en passant
     Texture2D texture;
-    Position legal_moves;
+    Position legal_positions;
 } Piece;
 
 typedef struct {
@@ -33,6 +33,8 @@ typedef struct {
 typedef struct {
     Square squares[8][8];
     CapturedPieces captured;
+    bool turn;  // true: white,  false: black
+    bool mate;
 } Board;
 
 

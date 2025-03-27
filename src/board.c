@@ -6,7 +6,6 @@
 
 Texture2D piece_textures[12];
 
-
 Piece *create_piece(char type, char color) {
     Piece *piece = (Piece *)malloc(sizeof(Piece));
     if (!piece) {
@@ -61,6 +60,7 @@ void init_captured(Board *board) {
 
 void init_board(Board *board) {
     printf("Initializing board...\n");
+    board->turn = true;  // white starts
     init_captured(board);
     char const first_row[8] = {'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'};
 
