@@ -6,83 +6,17 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         int mouse_x = GetMouseX();
         int mouse_y = GetMouseY();
+
         int dest_x = (mouse_y - EXTRA_HEIGHT/2) / SQUARE_SIZE;  // col of chess board
         int dest_y = (mouse_x - EXTRA_WIDTH/2) / SQUARE_SIZE;   // row of chess board
 
         if (dest_x < 0 || dest_y < 0 || dest_x > 7 || dest_y >7) return;
 
         if (*is_piece_selected) {
-            char color = board->squares[*cur_x][*cur_y].piece->color;
-            // Unselecting
-            if (board->squares[*cur_x][*cur_y].piece == board->squares[dest_x][dest_y].piece ||
-                !board->squares[dest_x][dest_y].legal_move) {
-                *is_piece_selected = false;
-                reset_legal_moves(board);
-            }
-
-            // Moving to empty square
-            if (board->squares[dest_x][dest_y].piece == NULL && board->squares[dest_x][dest_y].legal_move) {
-
-                board->squares[dest_x][dest_y].piece = board->squares[*cur_x][*cur_y].piece;
-                board->squares[*cur_x][*cur_y].piece = NULL;
-                *is_piece_selected = false;
-                reset_legal_moves(board);
-                board->squares[dest_x][dest_y].piece->moves += 1;
-                board->turn= !board->turn;
-                update_last_move(board, color, dest_x, dest_y);
-
-                // Detect en passant
-                if (color == 'W') {
-                    // piece under it is black, ..., en passant conditions
-                    if (dest_x == 2  &&
-                        board->squares[dest_x+1][dest_y].piece  &&
-                        board->squares[dest_x+1][dest_y].piece->color != 'W'  &&
-                        board->squares[dest_x+1][dest_y].piece->moves == 1) {
-
-                        board->captured.white_captured_count += 1;
-                        board->captured.white_capture[board->captured.white_captured_count] = board->squares[dest_x+1][dest_y].piece;
-                        board->squares[dest_x+1][dest_y].piece = NULL;
-                    }
-
-                } else {
-                    // piece above it is white, ..., en passant conditions
-                    if (dest_x == 5  &&
-                        board->squares[dest_x-1][dest_y].piece  &&
-                        board->squares[dest_x-1][dest_y].piece->color != 'B'  &&
-                        board->squares[dest_x-1][dest_y].piece->moves == 1) {
-
-                        board->captured.black_captured_count += 1;
-                        board->captured.black_capture[board->captured.black_captured_count] = board->squares[dest_x-1][dest_y].piece;
-                        board->squares[dest_x-1][dest_y].piece = NULL;
-                    }
-                }
-
-            } else {  // Moving to nonempty square
-                // check if the dest is legal
-                if (board->squares[dest_x][dest_y].legal_move == true) {
-                    // Add dest piece to players captured set and increment num of captured
-                    // White capturing black
-                    if (board->squares[dest_x][dest_y].piece->color == 'B') {
-                        board->captured.white_captured_count += 1;
-                        board->captured.white_capture[board->captured.white_captured_count] = board->squares[dest_x][dest_y].piece;
-                    }
-                    // Black capturing white
-                    if (board->squares[dest_x][dest_y].piece->color == 'W') {
-                        board->captured.black_captured_count += 1;
-                        board->captured.black_capture[board->captured.black_captured_count] = board->squares[dest_x][dest_y].piece;
-                    }
-                    // Complete the move: move piece to dest, remove dest, reset things
-                    board->squares[dest_x][dest_y].piece = board->squares[*cur_x][*cur_y].piece;
-                    board->squares[*cur_x][*cur_y].piece = NULL;
-                    *is_piece_selected = false;
-
-                    reset_legal_moves(board);
-                    board->squares[dest_x][dest_y].piece->moves += 1;
-                    board->turn= !board->turn;
-
-                    update_last_move(board, color, dest_x, dest_y);
-                }
-            }
+            int c_x = *cur_x;
+            int c_y = *cur_y;
+            perform_move(board, c_x, c_y, dest_x, dest_y);
+            *is_piece_selected = false;
         }
         // If no piece is selected and mouse click on nonempty square
         else if (board->squares[dest_x][dest_y].piece) {
