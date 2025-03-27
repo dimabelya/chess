@@ -18,13 +18,16 @@ void game() {
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(DARKBROWN);
+
         draw_board();
         draw_pieces(&board);
         draw_captured(&board);
         draw_turn(&board);
         draw_mate(&board);
+
         highlight_square(&board, row, col, selected);
         select_piece(&board, &row, &col, &selected);
+
         EndDrawing();
     }
 

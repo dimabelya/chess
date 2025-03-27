@@ -133,3 +133,15 @@ void reset_positions(Position *p) {
         }
     }
 }
+
+
+void update_last_move(Board *board, char color, int row, int col) {
+    Coordinate c = {row, col};
+    if (color == 'W') {
+        board->white_last_move = c;
+        printf("Last_Move: White to [%d][%d]\n", row, col);
+    } else {
+        board->black_last_move = c;
+        printf("Last_Move: Black to [%d][%d]\n", row, col);
+    }
+}

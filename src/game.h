@@ -5,11 +5,6 @@
 #include "board.h"
 
 
-typedef struct {
-    int row;
-    int col;
-} Coordinate;
-
 void get_potential_positions(Board *board, int row, int col, Position *p);
 Coordinate find_king(Board *board, char color);
 void set_legal_moves(Board *board, int from_row, int from_col);

@@ -9,7 +9,7 @@ void get_potential_positions(Board *board, int row, int col, Position *p) {
     char color = board->squares[row][col].piece->color;
 
     switch (type) {
-        case 'P': {  /*---- KNIGHT ----*/
+        case 'P': {  /*---- PAWN ----*/
             // TODO:  * En Passant,  * Promoting
 
             int direction = (color == 'B') ? 1 : -1;
@@ -37,6 +37,38 @@ void get_potential_positions(Board *board, int row, int col, Position *p) {
                     }
                 }
             }
+
+            // En Passant -----------------
+            if (color == 'W') {
+                if (row == 3) {
+                    // Check for all black pawns at row 3 that moved once
+                    for (int i = 0; i < 8; i++) {
+                        if (board->squares[3][i].piece  &&
+                            board->squares[3][i].piece->color != color  &&
+                            board->squares[3][i].piece->moves == 1  &&
+                            board->black_last_move.row == row  &&
+                            board->black_last_move.col == i) {
+
+                            p->positions[2][i] = true;
+                        }
+                    }
+                }
+            } else {
+                if (row == 4) {
+                    // Check for all white pawns at row 4 that moved once
+                    for (int i = 0; i < 8; i++) {
+                        if (board->squares[4][i].piece  &&
+                            board->squares[4][i].piece->color != color  &&
+                            board->squares[4][i].piece->moves == 1  &&
+                            board->white_last_move.row == row  &&
+                            board->white_last_move.col == i) {
+
+                            p->positions[5][i] = true;
+                        }
+                    }
+                }
+            }
+
         }
             break;
         case 'R': {  /*---- ROOK ----*/
