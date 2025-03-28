@@ -8,6 +8,7 @@
 
 void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected);
 void highlight_square(Board *board, int cur_x, int cur_y, bool is_piece_selected);
+
 void draw_captured(Board *board);
 void draw_board();
 void draw_pieces(Board *board);

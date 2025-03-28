@@ -14,7 +14,7 @@ bool moving_king_safe(Board *board, int row, int from_col, int to_row, int to_co
 bool is_king_safe(Board *board, int row, int col);
 bool check_mate(Board *board, char color);
 
-void perform_move(Board *board, int cur_x, int cur_y, int dest_x, int dest_y);
+void perform_move(Board *board, int cur_row, int cur_col, int dest_row, int dest_col);
 
 
 #endif //CHESS_GAME_H

@@ -3,6 +3,8 @@
 
 
 void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected) {
+    // TODO: fix the left side selection bug
+
     if (IsMouseButtonPressed(MOUSE_LEFT_BUTTON)) {
         int mouse_x = GetMouseX();
         int mouse_y = GetMouseY();
@@ -20,6 +22,7 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
         }
         // If no piece is selected and mouse click on nonempty square
         else if (board->squares[dest_x][dest_y].piece) {
+
             if ((board->turn && board->squares[dest_x][dest_y].piece->color == 'W') ||
                 (!board->turn && board->squares[dest_x][dest_y].piece->color == 'B')) {
                 *cur_x = dest_x;
@@ -32,6 +35,8 @@ void select_piece(Board *board, int *cur_x, int *cur_y, bool *is_piece_selected)
 
 
 void highlight_square(Board *board, int cur_x, int cur_y, bool is_piece_selected) {
+    // TODO: fix the left side selection bug
+
     if (is_piece_selected) {
         float box_x = (float)cur_y * SQUARE_SIZE + (float)EXTRA_WIDTH/2;
         float box_y = (float)cur_x * SQUARE_SIZE + (float)EXTRA_HEIGHT/2;

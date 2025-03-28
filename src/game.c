@@ -218,8 +218,7 @@ void get_potential_positions(Board *board, int row, int col, Position *p) {
                 }
             }
 
-            // TODO: Castling -----
-
+            // Castling
             // King has not moved and not in check
             if (board->squares[row][col].piece->moves == 0) {
                 // Left rook has not moved
@@ -235,7 +234,6 @@ void get_potential_positions(Board *board, int row, int col, Position *p) {
                         p->positions[row][2] = true;
                     }
                 }
-
                 // Right rook has not moved
                 if (board->squares[row][7].piece  &&
                     board->squares[row][7].piece->type == 'R'  &&
@@ -476,103 +474,126 @@ bool check_mate(Board *board, char color) {
 }
 
 
-void perform_move(Board *board, int cur_x, int cur_y, int dest_x, int dest_y) {
+void perform_move(Board *board, int cur_row, int cur_col, int dest_row, int dest_col) {
+    char color = board->squares[cur_row][cur_col].piece->color;
 
-    char color = board->squares[cur_x][cur_y].piece->color;
     // Unselecting
-    if (board->squares[cur_x][cur_y].piece == board->squares[dest_x][dest_y].piece ||
-        !board->squares[dest_x][dest_y].legal_move) {
-        //*is_piece_selected = false;
+    if (board->squares[cur_row][cur_col].piece == board->squares[dest_row][dest_col].piece ||
+        !board->squares[dest_row][dest_col].legal_move) {
         reset_legal_moves(board);
     }
 
     // Moving to empty square
-    if (board->squares[dest_x][dest_y].piece == NULL && board->squares[dest_x][dest_y].legal_move) {
+    if (board->squares[dest_row][dest_col].piece == NULL && board->squares[dest_row][dest_col].legal_move) {
 
-        board->squares[dest_x][dest_y].piece = board->squares[cur_x][cur_y].piece;
-        board->squares[cur_x][cur_y].piece = NULL;
-        //*is_piece_selected = false;
-        reset_legal_moves(board);
-        board->squares[dest_x][dest_y].piece->moves += 1;
-        board->turn= !board->turn;
-        update_last_move(board, color, dest_x, dest_y);
+        // Detect Castling
+        // If moving king from origin
+        if (board->squares[cur_row][cur_col].piece &&
+            board->squares[cur_row][cur_col].piece->type == 'K' &&
+            board->squares[cur_row][cur_col].piece->moves == 0 &&
+            (dest_col == cur_col + 2  ||  dest_col == cur_col - 2)) {
+
+            printf("Castling attempt\n");
+
+            // Left rook castling
+            if (board->squares[cur_row][0].piece &&
+                board->squares[cur_row][0].piece->type == 'R' &&
+                dest_row == cur_row && dest_col == 2) {
+
+                printf("Right rook castling\n");
+                // Move rook over
+                board->squares[dest_row][3].piece = board->squares[cur_row][0].piece;
+                board->squares[cur_row][0].piece = NULL;
+                // Move king over
+                board->squares[dest_row][dest_col].piece = board->squares[cur_row][cur_col].piece;
+                board->squares[cur_row][cur_col].piece = NULL;
+
+                reset_legal_moves(board);
+                board->turn= !board->turn;
+            }
+
+            // Right rook castling
+            if (board->squares[cur_row][7].piece &&
+                board->squares[cur_row][7].piece->type == 'R' &&
+                dest_row == cur_row && dest_col == 6) {
+
+                printf("Right rook castling\n");
+                // Move rook over
+                board->squares[dest_row][5].piece = board->squares[cur_row][7].piece;
+                board->squares[cur_row][7].piece = NULL;
+                // Move king over
+                board->squares[dest_row][dest_col].piece = board->squares[cur_row][cur_col].piece;
+                board->squares[cur_row][cur_col].piece = NULL;
+
+                reset_legal_moves(board);
+                board->turn= !board->turn;
+            }
+
+        } else {
+            // Default
+            board->squares[dest_row][dest_col].piece = board->squares[cur_row][cur_col].piece;
+            board->squares[cur_row][cur_col].piece = NULL;
+
+            reset_legal_moves(board);
+            board->squares[dest_row][dest_col].piece->moves += 1;
+            board->turn= !board->turn;
+            update_last_move(board, color, dest_row, dest_col);
+        }
+
+
+
 
         // Detect en passant
         if (color == 'W') {
             // piece under it is black, ..., en passant conditions
-            if (dest_x == 2  &&
-                board->squares[dest_x+1][dest_y].piece  &&
-                board->squares[dest_x+1][dest_y].piece->color != 'W'  &&
-                board->squares[dest_x+1][dest_y].piece->moves == 1) {
+            if (dest_row == 2 &&
+                board->squares[dest_row + 1][dest_col].piece &&
+                board->squares[dest_row + 1][dest_col].piece->color != 'W' &&
+                board->squares[dest_row + 1][dest_col].piece->moves == 1) {
 
                 board->captured.white_captured_count += 1;
-                board->captured.white_capture[board->captured.white_captured_count] = board->squares[dest_x+1][dest_y].piece;
-                board->squares[dest_x+1][dest_y].piece = NULL;
+                board->captured.white_capture[board->captured.white_captured_count] = board->squares[dest_row + 1][dest_col].piece;
+                board->squares[dest_row + 1][dest_col].piece = NULL;
             }
         } else {
             // piece above it is white, ..., en passant conditions
-            if (dest_x == 5  &&
-                board->squares[dest_x-1][dest_y].piece  &&
-                board->squares[dest_x-1][dest_y].piece->color != 'B'  &&
-                board->squares[dest_x-1][dest_y].piece->moves == 1) {
+            if (dest_row == 5 &&
+                board->squares[dest_row - 1][dest_col].piece &&
+                board->squares[dest_row - 1][dest_col].piece->color != 'B' &&
+                board->squares[dest_row - 1][dest_col].piece->moves == 1) {
 
                 board->captured.black_captured_count += 1;
-                board->captured.black_capture[board->captured.black_captured_count] = board->squares[dest_x-1][dest_y].piece;
-                board->squares[dest_x-1][dest_y].piece = NULL;
+                board->captured.black_capture[board->captured.black_captured_count] = board->squares[dest_row - 1][dest_col].piece;
+                board->squares[dest_row - 1][dest_col].piece = NULL;
             }
         }
 
-        // Detect Castling
-        // If moving king from origin
-
-        if (board->squares[cur_x][cur_y].piece  &&
-            board->squares[cur_y][cur_y].piece->type == 'K' &&
-            board->squares[cur_y][cur_y].piece->moves == 0) {
-            // Left rook castling
-            if (board->squares[0][cur_y].piece->type == 'R'  &&  dest_x == 2  &&  dest_y == cur_y) {
-                // Move rook over
-                board->squares[3][dest_y].piece = board->squares[0][cur_y].piece;
-                board->squares[0][cur_y].piece = NULL;
-                printf("Left rook castling\n");
-            }
-            // Right rook castling
-            if (board->squares[7][cur_y].piece->type == 'R'  &&  dest_x == 6  &&  dest_y == cur_y) {
-                // Move rook over
-                board->squares[5][dest_y].piece = board->squares[7][cur_y].piece;
-                board->squares[7][cur_y].piece = NULL;
-                printf("Right rook castling\n");
-            }
-            if (board->squares[7][dest_y].piece->type == 'R') {
-                printf("Right rook castling!!!!!!!\n");
-            }
-
-        }
 
 
     } else {  // Moving to nonempty square
         // check if the dest is legal
-        if (board->squares[dest_x][dest_y].legal_move == true) {
+        if (board->squares[dest_row][dest_col].legal_move == true) {
             // Add dest piece to players captured set and increment num of captured
             // White capturing black
-            if (board->squares[dest_x][dest_y].piece->color == 'B') {
+            if (board->squares[dest_row][dest_col].piece->color == 'B') {
                 board->captured.white_captured_count += 1;
-                board->captured.white_capture[board->captured.white_captured_count] = board->squares[dest_x][dest_y].piece;
+                board->captured.white_capture[board->captured.white_captured_count] = board->squares[dest_row][dest_col].piece;
             }
             // Black capturing white
-            if (board->squares[dest_x][dest_y].piece->color == 'W') {
+            if (board->squares[dest_row][dest_col].piece->color == 'W') {
                 board->captured.black_captured_count += 1;
-                board->captured.black_capture[board->captured.black_captured_count] = board->squares[dest_x][dest_y].piece;
+                board->captured.black_capture[board->captured.black_captured_count] = board->squares[dest_row][dest_col].piece;
             }
             // Complete the move: move piece to dest, remove dest, reset things
-            board->squares[dest_x][dest_y].piece = board->squares[cur_x][cur_y].piece;
-            board->squares[cur_x][cur_y].piece = NULL;
+            board->squares[dest_row][dest_col].piece = board->squares[cur_row][cur_col].piece;
+            board->squares[cur_row][cur_col].piece = NULL;
             //*is_piece_selected = false;
 
             reset_legal_moves(board);
-            board->squares[dest_x][dest_y].piece->moves += 1;
+            board->squares[dest_row][dest_col].piece->moves += 1;
             board->turn= !board->turn;
 
-            update_last_move(board, color, dest_x, dest_y);
+            update_last_move(board, color, dest_row, dest_col);
         }
     }
 
