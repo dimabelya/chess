@@ -5,9 +5,6 @@
 #include "constants.h"
 
 void game() {
-
-    // TODO:  * fix the misaligned selection on the left of the board
-
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
     load_piece_textures();
     Board board;
