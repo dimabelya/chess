@@ -1,8 +1,8 @@
 #ifndef CHESS_CONSTANTS_H
 #define CHESS_CONSTANTS_H
 
-#define SQUARE_SIZE   70
-#define SCALE         0.5f
+#define SQUARE_SIZE   100
+#define SCALE         0.75f
 #define BOARD_SIZE    (SQUARE_SIZE * 8)
 #define EXTRA_WIDTH   (SQUARE_SIZE * 4)
 #define EXTRA_HEIGHT  (SQUARE_SIZE * 1)

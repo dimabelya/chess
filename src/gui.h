@@ -14,6 +14,7 @@ void draw_board();
 void draw_pieces(Board *board);
 void draw_turn(Board *board);
 void draw_mate(Board *board);
+void draw_promotion(char c);
 
 
 #endif //CHESS_GUI_H

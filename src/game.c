@@ -2,6 +2,7 @@
 #include "game.h"
 #include "gui.h"
 #include <stdio.h>
+#include <string.h>
 
 
 void get_potential_positions(Board *board, int row, int col, Position *p) {
@@ -432,8 +433,10 @@ bool is_king_safe(Board *board, int row, int col) {
     // For all enemy pieces
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
+            printf("TEST:  i=%d, j=%d\n", i, j);
             if (board->squares[i][j].piece &&
                 board->squares[i][j].piece->color != king_color) {
+
                 Position p;
                 reset_positions(&p);
                 get_potential_positions(board, i, j, &p);
@@ -557,12 +560,23 @@ void perform_move(Board *board, int cur_row, int cur_col, int dest_row, int dest
             board->turn= !board->turn;
             update_last_move(board, color, dest_row, dest_col);
         }
+
+        /* ----- Promoting ----- */
+        // Detect if a promoting happen
+        if (board->squares[dest_row][dest_col].piece->type == 'P'  &&
+            (dest_row == 0  ||  dest_row == 7)) {
+
+            if (color == 'W') {
+                printf("White Promoting\n");
+            } else {
+                printf("Black Promoting\n");
+            }
+            draw_promotion(color);
+
+        }
+
     }
 }
-
-
-
-
 
 
 

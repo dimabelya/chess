@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include "board.h"
 #include "raylib.h"
+#include <string.h>
+
 
 
 Texture2D piece_textures[12];
@@ -16,6 +18,7 @@ Piece *create_piece(char type, char color) {
     piece->color = color;
     piece->moves = 0;
     return piece;
+
 }
 
 
@@ -132,6 +135,7 @@ void reset_positions(Position *p) {
             p->positions[i][j] = false;
         }
     }
+//    memset(p, 0, sizeof(Position));
 }
 
 

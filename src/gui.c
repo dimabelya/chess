@@ -207,3 +207,11 @@ void draw_mate(Board *board) {
     }
 }
 
+
+void draw_promotion(char c) {
+    int x = SCREEN_WIDTH/2;
+    int y = SCREEN_HEIGHT/2;
+    printf("Drawing promotion\n");
+
+    DrawCircle(100, 100, 50, RED);
+}
