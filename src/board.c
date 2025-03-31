@@ -18,7 +18,6 @@ Piece *create_piece(char type, char color) {
     piece->color = color;
     piece->moves = 0;
     return piece;
-
 }
 
 
@@ -56,8 +55,8 @@ void init_captured(Board *board) {
         board->captured.white_capture[i] = NULL;
         board->captured.black_capture[i] = NULL;
     }
-    board->captured.white_captured_count = -1;
-    board->captured.black_captured_count = -1;
+    board->captured.white_captured_count = 0; // TODO: was originally -1, slight missalaignment
+    board->captured.black_captured_count = 0;
 }
 
 

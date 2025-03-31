@@ -17,7 +17,7 @@ void get_potential_positions(Board *board, int row, int col, Position *p) {
             int start_row = (color == 'B') ? 1 : 6;
 
             // Single move forward
-            if (board->squares[row + direction][col].piece == NULL) {
+            if ((row+direction) < 8  &&  (row+direction) >= 0  &&  board->squares[row + direction][col].piece == NULL ) {
                 p->positions[row + direction][col] = true;
 
                 // Double move forward
