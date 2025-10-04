@@ -6,10 +6,15 @@
 
 void game() {
     InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "Chess");
+
+
     load_piece_textures();
+
     Board board;
     init_board(&board);
-    int row, col = -1;
+
+    int row = -1;
+    int col = -1;
     bool selected = false;
 
     while (!WindowShouldClose()) {

@@ -6,8 +6,8 @@
 
 
 void get_potential_positions(Board *board, int row, int col, Position *p) {
-    char type = board->squares[row][col].piece->type;
-    char color = board->squares[row][col].piece->color;
+    const char type = board->squares[row][col].piece->type;
+    const char color = board->squares[row][col].piece->color;
 
     switch (type) {
         case 'P': {  /*---- PAWN ----*/
@@ -40,6 +40,7 @@ void get_potential_positions(Board *board, int row, int col, Position *p) {
             }
 
             // En Passant
+            // TODO: does not capture the passed enemy pawn
             if (color == 'W') {
                 if (row == 3) {
                     // Check for all black pawns at row 3 that moved once
@@ -260,7 +261,8 @@ void get_potential_positions(Board *board, int row, int col, Position *p) {
 
 Coordinate find_king(Board *board, char color) {
     // Get king location
-    int king_row, king_col = -1;
+    int king_row = -1;
+    int king_col = -1;
     for (int i = 0; i < 8; i++) {
         for (int j = 0; j < 8; j++) {
             if (board->squares[i][j].piece &&
@@ -577,22 +579,4 @@ void perform_move(Board *board, int cur_row, int cur_col, int dest_row, int dest
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

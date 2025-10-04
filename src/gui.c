@@ -173,13 +173,13 @@ void draw_turn(Board *board) {
     int x = EXTRA_WIDTH/4;
     int text_width = MeasureText("Turn", 10);
 
-    DrawText("Turn", x-(text_width/2), y-30, 10, BLACK);
+    DrawText("Turn", x-(text_width/2), y-80, 20, BLACK);
     DrawCircle(x, y, 13, GRAY);
 
     if (board->turn) {
-        DrawCircle(x, y, 10, WHITE);
+        DrawCircle(x, y, 30, WHITE);
     } else {
-        DrawCircle(x, y, 10, BLACK);
+        DrawCircle(x, y, 30, BLACK);
     }
 
 }

@@ -1,7 +1,6 @@
 #ifndef CHESS_BOARD_H
 #define CHESS_BOARD_H
 
-#include <stdlib.h>
 #include "raylib.h"
 #include "constants.h"
 #include "board.h"

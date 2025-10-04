@@ -4,8 +4,7 @@
 #include "raylib.h"
 #include <string.h>
 
-
-
+// TODO: remove this and store texture in Game obj.
 Texture2D piece_textures[12];
 
 Piece *create_piece(char type, char color) {
@@ -22,6 +21,7 @@ Piece *create_piece(char type, char color) {
 
 
 void load_piece_textures() {
+    // TODO: pass in the Game obj here to save textures
     piece_textures[0] = LoadTexture("../assets/images/white-pawn.png");
     piece_textures[1] = LoadTexture("../assets/images/black-pawn.png");
     piece_textures[2] = LoadTexture("../assets/images/white-rook.png");
@@ -43,6 +43,7 @@ void load_piece_textures() {
 
 
 void unload_piece_textures() {
+    // TODO: updte unload to Game obj
     for (int i = 0; i < 12; i++) {
         UnloadTexture(piece_textures[i]); // Unload each texture
         piece_textures[i].id = 0;
@@ -136,7 +137,6 @@ void reset_positions(Position *p) {
     }
 //    memset(p, 0, sizeof(Position));
 }
-
 
 void update_last_move(Board *board, char color, int row, int col) {
     Coordinate c = {row, col};

@@ -1,13 +1,14 @@
 #ifndef CHESS_CONSTANTS_H
 #define CHESS_CONSTANTS_H
 
-#define SQUARE_SIZE   100
-#define SCALE         0.75f
+#define SQUARE_SIZE   150
+#define SCALE         1.10f
 #define BOARD_SIZE    (SQUARE_SIZE * 8)
 #define EXTRA_WIDTH   (SQUARE_SIZE * 4)
 #define EXTRA_HEIGHT  (SQUARE_SIZE * 1)
 #define SCREEN_WIDTH  (BOARD_SIZE + EXTRA_WIDTH)
 #define SCREEN_HEIGHT (BOARD_SIZE + EXTRA_HEIGHT)
 
+// TODO: make the screen scalable
 
 #endif //CHESS_CONSTANTS_H
